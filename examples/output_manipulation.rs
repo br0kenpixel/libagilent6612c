@@ -1,3 +1,5 @@
+use std::{thread::sleep, time::Duration};
+
 use agilent6612c::{device::Agilent6612c, params::ConnectionParameters};
 
 fn main() {
@@ -6,6 +8,10 @@ fn main() {
 
     println!("Connected");
 
-    let hw = device.hwinfo().unwrap();
-    println!("{hw}");
+    let out = device.output().unwrap();
+    println!("The output is currently: {out}");
+
+    device.set_output(!out).unwrap();
+    sleep(Duration::from_secs(3));
+    device.set_output(out).unwrap();
 }

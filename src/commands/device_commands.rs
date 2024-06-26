@@ -5,6 +5,7 @@ pub enum Command {
     GetDeviceModelName,
     GetFirmwareVersion,
     SetOutput(bool),
+    GetOutput,
 }
 
 impl Command {
@@ -12,7 +13,7 @@ impl Command {
         let mut buffer = String::with_capacity(4);
 
         match self {
-            Self::GetDeviceModelName => buffer.push_str("*id?"),
+            Self::GetDeviceModelName => buffer.push_str("*idn?"),
             Self::GetFirmwareVersion => unimplemented!(),
             Self::SetOutput(value) => {
                 buffer.push_str("output ");
@@ -23,6 +24,7 @@ impl Command {
                     buffer.push_str("off");
                 }
             }
+            Self::GetOutput => buffer.push_str("output?"),
         };
 
         buffer.push_str("\r\n");

@@ -1,10 +1,14 @@
-use std::{any::type_name, str::FromStr};
+use std::{
+    any::{type_name, Any},
+    str::FromStr,
+};
 
 #[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub enum CommandResult {
     Nothing,
     Float(f32),
     String(String),
+    Boolean(bool),
 }
 
 impl FromStr for CommandResult {
@@ -12,6 +16,14 @@ impl FromStr for CommandResult {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let stripped = s.strip_suffix("\r\n").unwrap_or(s);
+
+        if stripped == "1" {
+            return Ok(Self::Boolean(true));
+        }
+
+        if stripped == "0" {
+            return Ok(Self::Boolean(false));
+        }
 
         if stripped.is_empty() {
             return Ok(Self::Nothing);
@@ -34,6 +46,21 @@ impl From<f32> for CommandResult {
 impl From<&str> for CommandResult {
     fn from(value: &str) -> Self {
         Self::String(value.into())
+    }
+}
+
+impl TryFrom<CommandResult> for bool {
+    type Error = crate::error::Error;
+
+    fn try_from(value: CommandResult) -> Result<Self, Self::Error> {
+        let CommandResult::Boolean(value) = value else {
+            return Err(Self::Error::UnexpectedResultType {
+                expected: "bool",
+                got: value.type_name(),
+            });
+        };
+
+        Ok(value)
     }
 }
 
@@ -68,11 +95,21 @@ impl TryFrom<CommandResult> for String {
 }
 
 impl CommandResult {
-    fn type_name(&self) -> &'static str {
+    pub(crate) fn type_name(&self) -> &'static str {
         match self {
             Self::Nothing => "NULL",
             Self::Float(..) => type_name::<f32>(),
             Self::String(..) => type_name::<String>(),
+            Self::Boolean(..) => type_name::<bool>(),
+        }
+    }
+
+    pub(crate) fn into_any(self) -> Box<dyn Any> {
+        match self {
+            Self::Nothing => unreachable!("NULL result cannot be converted to Any"),
+            Self::Float(value) => Box::new(value),
+            Self::String(value) => Box::new(value),
+            Self::Boolean(value) => Box::new(value),
         }
     }
 }
