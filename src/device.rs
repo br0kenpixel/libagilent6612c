@@ -53,6 +53,10 @@ impl Agilent6612c {
         self.send_command_and_expect_result(Command::GetMaximumSupportedCurrent)
     }
 
+    pub fn ocp(&mut self) -> Result<bool> {
+        self.send_command_and_expect_result(Command::GetOverCurrentProtectionStatus)
+    }
+
     pub fn output(&mut self) -> Result<bool> {
         self.send_command_and_expect_result(Command::GetOutput)
     }
@@ -83,6 +87,10 @@ impl Agilent6612c {
 
     pub fn set_output_current(&mut self, value: f32) -> Result<()> {
         self.send_command(Command::SetOutputCurrent(value, 4))
+    }
+
+    pub fn set_ocp(&mut self, enabled: bool) -> Result<()> {
+        self.send_command(Command::SetOverCurrentProtection(enabled))
     }
 
     fn send_command_and_expect_result<T: Sized + 'static>(&mut self, cmd: Command) -> Result<T> {

@@ -13,4 +13,5 @@ fn main() {
     let maxi = device.maximum_current().unwrap();
 
     println!("Maximum values: {maxv:.0}V, {maxi:.0}A");
+    println!("OCP: {}", device.ocp().unwrap());
 }

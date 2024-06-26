@@ -17,6 +17,9 @@ pub enum Command {
     GetOutputCurrent,
     SetOutputVoltage(f32, usize),
     SetOutputCurrent(f32, usize),
+
+    GetOverCurrentProtectionStatus,
+    SetOverCurrentProtection(bool),
 }
 
 impl Command {
@@ -48,6 +51,16 @@ impl Command {
             }
             Self::GetMaximumSupportedVoltage => buffer.push_str("volt? max"),
             Self::GetMaximumSupportedCurrent => buffer.push_str("curr? max"),
+            Self::GetOverCurrentProtectionStatus => buffer.push_str("curr:prot:stat?"),
+            Self::SetOverCurrentProtection(value) => {
+                buffer.push_str("curr:prot:stat ");
+
+                if value {
+                    buffer.push_str("on");
+                } else {
+                    buffer.push_str("off");
+                }
+            }
         };
 
         buffer.push_str("\r\n");

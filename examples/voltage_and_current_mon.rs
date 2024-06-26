@@ -9,9 +9,11 @@ fn main() {
     println!("Connected");
 
     println!("Setting safe voltage and current: 1V, 10mA");
-
     device.set_output_voltage(1.0).unwrap();
     device.set_output_current(0.010).unwrap();
+
+    println!("Enabling OCP");
+    device.set_ocp(true).unwrap();
 
     println!("Press CTRL-C to stop");
     loop {
