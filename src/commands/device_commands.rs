@@ -28,7 +28,7 @@ impl Command {
 
         match self {
             Self::GetDeviceModelName => buffer.push_str("*idn?"),
-            Self::GetFirmwareVersion => unimplemented!(),
+            Self::GetFirmwareVersion => buffer.push_str("syst:vers?"),
             Self::SetOutput(value) => {
                 buffer.push_str("output ");
 

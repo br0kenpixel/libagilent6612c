@@ -7,7 +7,8 @@ fn main() {
     println!("Connected");
 
     let hw = device.hwinfo().unwrap();
-    println!("{hw}");
+    let ver = device.firmware_version().unwrap();
+    println!("{hw}, FW ver: {ver}");
 
     let maxv = device.maximum_voltage().unwrap();
     let maxi = device.maximum_current().unwrap();

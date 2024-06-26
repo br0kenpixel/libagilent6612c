@@ -45,6 +45,11 @@ impl Agilent6612c {
         self.send_command_and_expect_result(Command::GetDeviceModelName)
     }
 
+    pub fn firmware_version(&mut self) -> Result<String> {
+        self.send_command(Command::GetFirmwareVersion)?;
+        self.await_string_response()
+    }
+
     pub fn maximum_voltage(&mut self) -> Result<f32> {
         self.send_command_and_expect_result(Command::GetMaximumSupportedVoltage)
     }
@@ -106,6 +111,15 @@ impl Agilent6612c {
                 got,
             }),
         }
+    }
+
+    fn await_string_response(&mut self) -> Result<String> {
+        let mut buffer = String::with_capacity(8);
+
+        self.reader.read_line(&mut buffer)?;
+        let stripped = buffer.strip_suffix("\r\n").unwrap_or(&buffer);
+
+        Ok(stripped.into())
     }
 
     pub fn send_command_with_result(&mut self, cmd: Command) -> Result<CommandResult> {
