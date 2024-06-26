@@ -4,6 +4,8 @@ use crate::error::Result;
 pub enum Command {
     GetDeviceModelName,
     GetFirmwareVersion,
+    GetMaximumSupportedVoltage,
+    GetMaximumSupportedCurrent,
 
     SetOutput(bool),
     GetOutput,
@@ -44,6 +46,8 @@ impl Command {
             Self::SetOutputCurrent(i, precision) => {
                 buffer.push_str(&format!("current {i:.*}", precision));
             }
+            Self::GetMaximumSupportedVoltage => buffer.push_str("volt? max"),
+            Self::GetMaximumSupportedCurrent => buffer.push_str("curr? max"),
         };
 
         buffer.push_str("\r\n");

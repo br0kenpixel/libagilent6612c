@@ -8,4 +8,9 @@ fn main() {
 
     let hw = device.hwinfo().unwrap();
     println!("{hw}");
+
+    let maxv = device.maximum_voltage().unwrap();
+    let maxi = device.maximum_current().unwrap();
+
+    println!("Maximum values: {maxv:.0}V, {maxi:.0}A");
 }

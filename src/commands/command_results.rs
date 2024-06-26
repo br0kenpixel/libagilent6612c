@@ -1,3 +1,4 @@
+use crate::error::Error;
 use std::{
     any::{type_name, Any},
     str::FromStr,
@@ -5,7 +6,6 @@ use std::{
 
 #[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub enum CommandResult {
-    Nothing,
     Float(f32),
     String(String),
     Boolean(bool),
@@ -26,7 +26,7 @@ impl FromStr for CommandResult {
         }
 
         if stripped.is_empty() {
-            return Ok(Self::Nothing);
+            return Err(Error::EmptyResult);
         }
 
         if let Ok(float) = stripped.parse::<f32>() {
@@ -97,7 +97,6 @@ impl TryFrom<CommandResult> for String {
 impl CommandResult {
     pub(crate) fn type_name(&self) -> &'static str {
         match self {
-            Self::Nothing => "NULL",
             Self::Float(..) => type_name::<f32>(),
             Self::String(..) => type_name::<String>(),
             Self::Boolean(..) => type_name::<bool>(),
@@ -106,7 +105,6 @@ impl CommandResult {
 
     pub(crate) fn into_any(self) -> Box<dyn Any> {
         match self {
-            Self::Nothing => unreachable!("NULL result cannot be converted to Any"),
             Self::Float(value) => Box::new(value),
             Self::String(value) => Box::new(value),
             Self::Boolean(value) => Box::new(value),

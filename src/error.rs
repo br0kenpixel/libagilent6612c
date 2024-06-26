@@ -16,4 +16,6 @@ pub enum Error {
         expected: &'static str,
         got: &'static str,
     },
+    #[error("Received empty result")]
+    EmptyResult,
 }
