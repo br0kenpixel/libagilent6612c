@@ -1,0 +1,9 @@
+[package]
+name = "agilent6612c"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+derive_builder = "0.20.0"
+serialport = "4.3.0"
+thiserror = "1.0.61"
