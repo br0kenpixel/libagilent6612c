@@ -39,8 +39,32 @@ impl Agilent6612c {
         self.send_command_and_expect_result(Command::GetOutput, false)
     }
 
+    pub fn measure_voltage(&mut self) -> Result<f32> {
+        self.send_command_and_expect_result(Command::MeasureVoltage, false)
+    }
+
+    pub fn measure_current(&mut self) -> Result<f32> {
+        self.send_command_and_expect_result(Command::MeasureCurrent, false)
+    }
+
+    pub fn output_voltage(&mut self) -> Result<f32> {
+        self.send_command_and_expect_result(Command::GetOutputVoltage, false)
+    }
+
+    pub fn output_current(&mut self) -> Result<f32> {
+        self.send_command_and_expect_result(Command::GetOutputCurrent, false)
+    }
+
     pub fn set_output(&mut self, enabled: bool) -> Result<()> {
         self.send_command(Command::SetOutput(enabled))
+    }
+
+    pub fn set_output_voltage(&mut self, value: f32) -> Result<()> {
+        self.send_command(Command::SetOutputVoltage(value, 4))
+    }
+
+    pub fn set_output_current(&mut self, value: f32) -> Result<()> {
+        self.send_command(Command::SetOutputCurrent(value, 4))
     }
 
     fn send_command_and_expect_result<T: Sized + 'static>(

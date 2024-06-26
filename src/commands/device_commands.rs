@@ -1,11 +1,20 @@
 use crate::error::Result;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Copy)]
 pub enum Command {
     GetDeviceModelName,
     GetFirmwareVersion,
+
     SetOutput(bool),
     GetOutput,
+
+    MeasureVoltage,
+    MeasureCurrent,
+
+    GetOutputVoltage,
+    GetOutputCurrent,
+    SetOutputVoltage(f32, usize),
+    SetOutputCurrent(f32, usize),
 }
 
 impl Command {
@@ -25,6 +34,16 @@ impl Command {
                 }
             }
             Self::GetOutput => buffer.push_str("output?"),
+            Self::MeasureVoltage => buffer.push_str("meas:volt?"),
+            Self::MeasureCurrent => buffer.push_str("meas:curr?"),
+            Self::GetOutputVoltage => buffer.push_str("voltage?"),
+            Self::GetOutputCurrent => buffer.push_str("current?"),
+            Self::SetOutputVoltage(v, precision) => {
+                buffer.push_str(&format!("voltage {v:.*}", precision));
+            }
+            Self::SetOutputCurrent(i, precision) => {
+                buffer.push_str(&format!("current {i:.*}", precision));
+            }
         };
 
         buffer.push_str("\r\n");
